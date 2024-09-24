@@ -65,7 +65,8 @@ function Register()
         setPasswordIsInvalid(!isPasswordValid);
 
         if (isFirstNameValid && isEmailValid && isPasswordValid) {
-            axios.post('http://localhost:5144/account/register', {
+            axios.post('https://localhost:7296/account/register', {
+            //axios.post('http://192.168.100.23:2020/account/register', {
                 FirstName: firstName.value,
                 LastName: document.getElementsByName("LastName")[0].value,
                 Email: email.value,
@@ -73,6 +74,21 @@ function Register()
               })
               .then(function (response) {
                 console.log(response);
+
+                // var accessToken = response.data.access_token;
+
+                // axios.get("https://localhost:7296/test/get", {
+                // //axios.post("http://192.168.100.23:2020/test/get", {
+                //     headers: {
+                //         "Authorization": `Bearer ${accessToken}`
+                //     }
+                // })
+                // .then(function (response) {
+                //     console.log(response);
+                // })
+                // .catch(function (error) {
+                //     console.log(error);
+                // });
               })
               .catch(function (error) {
                 console.log(error);
