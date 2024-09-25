@@ -11,9 +11,16 @@ import {
     Heading,
     useColorModeValue,
     Link,
-  } from '@chakra-ui/react'
-  import { useState } from 'react'
-  import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons'
+  } from '@chakra-ui/react';
+  import { useState } from 'react';
+  import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons';
+  import {
+    LoginSocialFacebook,
+  } from 'reactjs-social-login';
+  
+  import {
+    FacebookLoginButton,
+  } from 'react-social-login-buttons';
 
 function Login1()
 {
@@ -40,7 +47,7 @@ function Login1()
     );  
 }
 
-function Login()
+function Login({addUser})
 {
     return(
         <form>
@@ -51,7 +58,7 @@ function Login()
                 bg={useColorModeValue('gray.50', 'gray.800')}>
                 <Stack spacing={8} mx={'auto'} maxW={'lg'} py={12} px={6}>
                     <Stack align={'center'}>
-                        <Heading fontSize={'4xl'}>Sign in to your account</Heading>
+                        <Heading fontSize={'4xl'}>Login to your account</Heading>
                     </Stack>
                     <Box
                         rounded={'lg'}
@@ -82,8 +89,34 @@ function Login()
                                     _hover={{
                                     bg: 'blue.500',
                                     }}>
-                                    Sign in
+                                    Login
                                 </Button>
+                                <LoginSocialFacebook
+                                    appId="8788719901138062"
+                                    fieldsProfile = {
+                                        'id,first_name,last_name,middle_name,name,name_format,picture,short_name,email,gender'
+                                    }
+                                    onLoginStart={() => {console.log("onLoginStart");}}
+                                    onLogoutSuccess={() => {console.log("onLogoutSuccess");}}
+                                    redirect_uri="/"
+                                    onResolve={(provider, data) => {
+                                        console.log("onResolve");
+                                        console.log(provider);
+                                        console.log(data);
+
+                                        addUser({
+                                            firstName: provider.data.first_name,
+                                            lastName: provider.data.last_name,
+                                            email: provider.data.email,
+                                            provider: "Facebook"
+                                        });
+                                    }}
+                                    onReject={err => {
+                                        console.log(err);
+                                    }}
+                                    >
+                                    <FacebookLoginButton />
+                                </LoginSocialFacebook>
                             </Stack>
                         </Stack>
                     </Box>

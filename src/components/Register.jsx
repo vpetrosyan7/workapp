@@ -1,5 +1,4 @@
-import axios from 'axios';
-import { Link, useNavigate } from "react-router-dom"
+import { Link } from "react-router-dom"
 import {
     Flex,
     Box,
@@ -18,10 +17,8 @@ import {
 import { useState } from 'react'
 import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons'
 
-function Register()
+function Register({addUser})
 {
-    const navigate = useNavigate();
-
     const [showPassword, setShowPassword] = useState(false);
     const [firstNameIsInvalid, setFirstNameIsInvalid] = useState(false);
     const [emailIsInvalid, setEmailIsInvalid] = useState(false);
@@ -41,36 +38,12 @@ function Register()
         setPasswordIsInvalid(!isPasswordValid);
 
         if (isFirstNameValid && isEmailValid && isPasswordValid) {
-            axios.post('https://localhost:7296/account/register', {
-            //axios.post('http://192.168.100.23:2020/account/register', {
-                FirstName: firstName.value,
-                LastName: document.getElementsByName("LastName")[0].value,
-                Email: email.value,
-                Password: password.value
-              })
-              .then(function (response) {
-                console.log(response);
-
-                navigate("/login");
-
-                // var accessToken = response.data.access_token;
-
-                // axios.get("https://localhost:7296/test/get", {
-                // //axios.post("http://192.168.100.23:2020/test/get", {
-                //     headers: {
-                //         "Authorization": `Bearer ${accessToken}`
-                //     }
-                // })
-                // .then(function (response) {
-                //     console.log(response);
-                // })
-                // .catch(function (error) {
-                //     console.log(error);
-                // });
-              })
-              .catch(function (error) {
-                console.log(error);
-              });
+            addUser({
+                firstName: firstName.value,
+                lastName: document.getElementsByName("LastName")[0].value,
+                email: email.value,
+                password: password.value
+            });
         }
     }
     
