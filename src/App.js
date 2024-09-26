@@ -2,12 +2,10 @@ import axios from 'axios';
 import Home from './components/Home';
 import Login from './components/Login';
 import Register from './components/Register';
-import { createBrowserRouter, RouterProvider, useNavigate } from "react-router-dom";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import './App.css';
 
 function App() {
-  //const navigate = useNavigate();
-
   const addUser = (user) => {
     axios.post('https://localhost:7296/account/register', {
     //axios.post('http://192.168.100.23:2020/account/register', {
@@ -17,10 +15,10 @@ function App() {
         Password: user.password,
         LoginProvider: user.provider
       })
-      .then(function (response) {
+      .then((response) => {
         console.log(response);
 
-        //navigate("/");
+        router.navigate("/");
 
         // var accessToken = response.data.access_token;
 
@@ -37,7 +35,7 @@ function App() {
         //     console.log(error);
         // });
       })
-      .catch(function (error) {
+      .catch((error) => {
         console.log(error);
       });
   }

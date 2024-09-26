@@ -1,4 +1,4 @@
-import axios from 'axios';
+import { useEffect } from 'react';
 import {
     Flex,
     Box,
@@ -12,15 +12,9 @@ import {
     useColorModeValue,
     Link,
   } from '@chakra-ui/react';
-  import { useState } from 'react';
-  import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons';
-  import {
-    LoginSocialFacebook,
-  } from 'reactjs-social-login';
-  
-  import {
-    FacebookLoginButton,
-  } from 'react-social-login-buttons';
+import { useState } from 'react';
+import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons';
+import GoogleLogin from './GoogleLogin';
 
 function Login1()
 {
@@ -49,6 +43,101 @@ function Login1()
 
 function Login({addUser})
 {
+    const loadFacebookSDK = () => {
+        // Check if the SDK is already loaded
+        if (window.FB) {
+            return;
+        }
+        
+        // Create a script element and load the Facebook SDK
+        (function(d, s, id) {
+            const fjs = d.getElementsByTagName(s)[0];
+            if (d.getElementById(id)) return;
+            const js = d.createElement(s); 
+            js.id = id;
+            js.src = "https://connect.facebook.net/en_US/sdk.js";
+            fjs.parentNode.insertBefore(js, fjs);
+        }(document, 'script', 'facebook-jssdk'));
+
+        // Once the SDK is loaded, initialize it with your App ID
+        window.fbAsyncInit = function() {
+            window.FB.init({
+                appId: '8788719901138062',
+                cookie: true,
+                xfbml: true,
+                version: 'v20.0'
+            });
+        };
+    };
+
+    // const loadGoogleSDK = () => {
+    //     const script = document.createElement('script');
+    //     script.src = 'https://accounts.google.com/gsi/client';
+    //     script.async = true;
+    //     script.defer = true;
+    //     document.body.appendChild(script);
+
+    //     // Initialize the Google Sign-In button after the script loads
+    //     script.onload = () => {
+    //         /* global google */
+    //         google.accounts.id.initialize({
+    //             client_id: '729882394972-jbg5mv2n6bircehuivu4sf3s5qlcrsn2.apps.googleusercontent.com',
+    //             callback: handleCredentialResponse, // Function to handle login response
+    //         });
+
+    //         // Render the Google Sign-In button
+    //         google.accounts.id.renderButton(
+    //             document.getElementById('googleSignInDiv'),
+    //             { theme: 'outline', size: 'large' }
+    //         );
+
+    //         google.accounts.id.prompt(); // Display the One Tap prompt
+    //     };
+    // };
+
+    useEffect(() => {
+        loadFacebookSDK();
+        //loadGoogleSDK();
+    }, []);
+
+    const handleFBLogin = () => {
+        window.FB.login(response => {
+          if (response.authResponse) {
+            console.log('Logged in successfully:', response);
+
+            window.FB.api('/me', { fields: 'id, first_name, last_name, picture, email' }, (data) => {
+              console.log('User information:', data);
+
+              addUser({
+                    firstName: data.first_name,
+                    lastName: data.last_name,
+                    email: data.email,
+                    provider: "Facebook"
+                });
+            });
+          } 
+          else {
+            console.log('User cancelled login or did not fully authorize.');
+          }
+        }, { scope: 'email' });
+    };
+
+    // const handleGoogleLogin = () => {
+    //     const auth2 = window.gapi.auth2.getAuthInstance();
+
+    //     auth2.signIn().then((data) => {
+    //       const profile = data.getBasicProfile();
+    //       console.log('ID: ' + profile.getId()); // Do not send to backend! Use ID token.
+    //       console.log('Name: ' + profile.getName());
+    //       console.log('Email: ' + profile.getEmail());
+          
+    //       const idToken = data.getAuthResponse().id_token;
+    //       console.log('ID Token: ' + idToken);
+          
+    //       // You can send the idToken to your server for validation/authentication
+    //     });
+    // };
+
     return(
         <form>
             <Flex
@@ -91,32 +180,17 @@ function Login({addUser})
                                     }}>
                                     Login
                                 </Button>
-                                <LoginSocialFacebook
-                                    appId="8788719901138062"
-                                    fieldsProfile = {
-                                        'id,first_name,last_name,middle_name,name,name_format,picture,short_name,email,gender'
-                                    }
-                                    onLoginStart={() => {console.log("onLoginStart");}}
-                                    onLogoutSuccess={() => {console.log("onLogoutSuccess");}}
-                                    redirect_uri="/"
-                                    onResolve={(provider, data) => {
-                                        console.log("onResolve");
-                                        console.log(provider);
-                                        console.log(data);
-
-                                        addUser({
-                                            firstName: provider.data.first_name,
-                                            lastName: provider.data.last_name,
-                                            email: provider.data.email,
-                                            provider: "Facebook"
-                                        });
-                                    }}
-                                    onReject={err => {
-                                        console.log(err);
-                                    }}
-                                    >
-                                    <FacebookLoginButton />
-                                </LoginSocialFacebook>
+                                <Button
+                                    type="button"
+                                    onClick={handleFBLogin}
+                                    bg={'blue.400'}
+                                    color={'white'}
+                                    _hover={{
+                                    bg: 'blue.500',
+                                    }}>
+                                    Login With Facebook
+                                </Button>
+                                <GoogleLogin />
                             </Stack>
                         </Stack>
                     </Box>
