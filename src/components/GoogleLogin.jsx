@@ -13,8 +13,11 @@ const GoogleLogin = () => {
     script.onload = () => {
       /* global google */
       google.accounts.id.initialize({
-        client_id: '729882394972-jbg5mv2n6bircehuivu4sf3s5qlcrsn2.apps.googleusercontent.com', // Replace with your Client ID
-        callback: handleCredentialResponse, // Function to handle login response
+        client_id: '729882394972-jbg5mv2n6bircehuivu4sf3s5qlcrsn2.apps.googleusercontent.com',
+        callback: (response) => {
+            console.log('Encoded JWT ID token: ' + response.credential);
+            // You can send this token to your server for authentication and validation
+          },
       });
 
       // Render the Google Sign-In button
@@ -26,12 +29,6 @@ const GoogleLogin = () => {
       google.accounts.id.prompt(); // Display the One Tap prompt
     };
   }, []);
-
-  // Function to handle the Google login response
-  const handleCredentialResponse = (response) => {
-    console.log('Encoded JWT ID token: ' + response.credential);
-    // You can send this token to your server for authentication and validation
-  };
 
   return (
     <div>
