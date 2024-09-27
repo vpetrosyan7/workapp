@@ -1,3 +1,4 @@
+import { useRef } from "react"
 import { Link } from "react-router-dom"
 import {
     Flex,
@@ -24,10 +25,14 @@ function Register({addUser})
     const [emailIsInvalid, setEmailIsInvalid] = useState(false);
     const [passwordIsInvalid, setPasswordIsInvalid] = useState(false);
 
+    const firstNameRef = useRef(null);
+    const emailRef = useRef(null);
+    const passwordRef = useRef(null);
+
     const submit = (e) => {
-        const firstName = document.getElementsByName("FirstName")[0];
-        const email = document.getElementsByName("Email")[0];
-        const password = document.getElementsByName("Password")[0];
+        const firstName = firstNameRef.current;
+        const email = emailRef.current;
+        const password = passwordRef.current;
 
         const isFirstNameValid = firstName.checkValidity();
         const isEmailValid = email.checkValidity();
@@ -70,7 +75,7 @@ function Register({addUser})
                                 <Box>
                                     <FormControl id="firstName" isRequired>
                                         <FormLabel>First Name</FormLabel>
-                                        <Input type="text" name="FirstName" isInvalid={firstNameIsInvalid} />
+                                        <Input type="text" ref={firstNameRef} name="FirstName" isInvalid={firstNameIsInvalid} />
                                     </FormControl>
                                 </Box>
                                 <Box>
@@ -82,12 +87,12 @@ function Register({addUser})
                             </HStack>
                             <FormControl id="email" isRequired>
                                 <FormLabel>Email address</FormLabel>
-                                <Input type="email" name="Email" isInvalid={emailIsInvalid} />
+                                <Input type="email" ref={emailRef} name="Email" isInvalid={emailIsInvalid} />
                             </FormControl>
                             <FormControl id="password" isRequired>
                                 <FormLabel>Password</FormLabel>
                                 <InputGroup>
-                                    <Input type={showPassword ? 'text' : 'password'} name="Password" isInvalid={passwordIsInvalid} />
+                                    <Input type={showPassword ? 'text' : 'password'} ref={passwordRef} name="Password" isInvalid={passwordIsInvalid} />
                                     <InputRightElement h={'full'}>
                                     <Button
                                         variant={'ghost'}
